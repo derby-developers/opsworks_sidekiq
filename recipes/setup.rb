@@ -4,6 +4,7 @@ include_recipe "opsworks_sidekiq::service"
 
 # setup sidekiq service per app
 node[:deploy].each do |application, deploy|
+  Chef::Log.debug("opsworks_sidekiq::setup application #{application}")
 
   if deploy[:application_type] != 'rails'
     Chef::Log.debug("Skipping opsworks_sidekiq::setup application #{application} as it is not a Rails app")
