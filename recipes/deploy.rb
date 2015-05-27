@@ -26,6 +26,19 @@ node[:deploy].each do |application, deploy|
     variables(:memcached => (deploy[:memcached] || {}), :environment => deploy[:rails_env])
   end
 
+  template "#{deploy[:deploy_to]}/shared/config/redis.yml" do
+    source "redis.yml.erb"
+    cookbook 'rails'
+    mode "0660"
+    variables(redis: deploy[:redis], environment: deploy[:rails_env])
+    group deploy[:group]
+    owner deploy[:user]
+
+    only_if do
+      deploy[:redis].present?
+    end
+  end
+
   node.set[:opsworks][:rails_stack][:restart_command] = node[:sidekiq][application][:restart_command]
 
   opsworks_deploy do

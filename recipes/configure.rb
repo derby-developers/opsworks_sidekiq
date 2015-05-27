@@ -40,4 +40,18 @@ node[:deploy].each do |application, deploy|
       File.exists?(deploy[:deploy_to]) && File.exists?("#{deploy[:deploy_to]}/shared/config/")
     end
   end
+
+  template "#{deploy[:deploy_to]}/shared/config/redis.yml" do
+    source "redis.yml.erb"
+    cookbook 'rails'
+    mode "0660"
+    variables(redis: deploy[:redis], environment: deploy[:rails_env])
+    group deploy[:group]
+    owner deploy[:user]
+
+    only_if do
+      deploy[:redis].present? && File.exists?(deploy[:deploy_to]) && File.exists?("#{deploy[:deploy_to]}/shared/config/")
+    end
+  end
+
 end
