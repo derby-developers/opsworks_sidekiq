@@ -9,6 +9,7 @@ check process sidekiq_<%= identifier %>
   with pidfile <%= pid_file %>
   start program = "/bin/su - <%= @deploy[:user] %> -c 'cd <%= @deploy[:current_path] %> && RAILS_ENV=<%= @deploy[:rails_env] %> bundle exec sidekiq -C <%= conf_file %> -P  <%= pid_file %> <%= syslog %>'" with timeout 90 seconds
   stop  program = "/bin/su - <%= @deploy[:user] %> -c 'kill -s TERM `cat <%= pid_file %>`'" with timeout 90 seconds
+  if memory usage > 1200 MB for 5 cycles then restart
   group sidekiq_<%= @application %>_group
 
   <% end %>
